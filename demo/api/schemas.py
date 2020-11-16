@@ -15,3 +15,8 @@ class CarResponseSchema(Schema):
 
 class CarRequestSchema(Schema):
     color = fields.Str()
+
+
+class DeleteCarResponseSchema(Schema):
+    message = fields.Str(default="Successfully deleted")
+

@@ -1,14 +1,13 @@
 import functools
 import json
 
-import aiohttp
 from aiohttp import ClientSession, web
 from aiohttp_apispec import response_schema, request_schema
 from aiohttp_jinja2 import template
 from asyncpg import UniqueViolationError
 
 from .models import Cars
-from .schemas import CarResponseSchema, CarRequestSchema
+from .schemas import CarResponseSchema, CarRequestSchema, DeleteCarResponseSchema
 
 pretty_json = functools.partial(json.dumps, indent=4)
 
@@ -27,8 +26,8 @@ async def cars_list(request: web.Request):
     cars_qs = await Cars.query.gino.all()
     cars_schema = CarResponseSchema(many=True)
     cars_json = cars_schema.dump(cars_qs)
-    return aiohttp.web.json_response({'cars': cars_json},
-                                     dumps=pretty_json)
+    return web.json_response({'cars': cars_json},
+                             dumps=pretty_json)
 
 
 @response_schema(CarResponseSchema(), 200)
@@ -39,8 +38,8 @@ async def car_detail(request: web.Request):
     car_schema = CarResponseSchema()
     car_json = car_schema.dump(car)
 
-    return aiohttp.web.json_response(car_json,
-                                     dumps=pretty_json)
+    return web.json_response(car_json,
+                             dumps=pretty_json)
 
 
 @response_schema(CarResponseSchema())
@@ -61,9 +60,9 @@ async def car_create(request: web.Request):
     car_schema = CarResponseSchema()
     car_json = car_schema.dump(car)
 
-    return aiohttp.web.json_response(car_json,
-                                     dumps=pretty_json,
-                                     status=201)
+    return web.json_response(car_json,
+                             dumps=pretty_json,
+                             status=201)
 
 
 @request_schema(CarRequestSchema())
@@ -81,3 +80,16 @@ async def car_update(request: web.Request):
 
     return web.json_response(car_json,
                              dumps=pretty_json)
+
+
+@response_schema(DeleteCarResponseSchema(), code=204)
+async def car_delete(request: web.Request):
+    car_id = int(request.match_info['id'])
+    car = await Cars.get(car_id)
+
+    await car.delete()
+
+    return web.json_response(
+        {'Message': 'Car was successfully deleted from db.'},
+        dumps=pretty_json,
+        status=204)
