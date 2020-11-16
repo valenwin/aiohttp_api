@@ -93,3 +93,14 @@ async def car_delete(request: web.Request):
         {'Message': 'Car was successfully deleted from db.'},
         dumps=pretty_json,
         status=204)
+
+
+@response_schema(CarResponseSchema(), 200)
+async def car_filter(request: web.Request):
+    producer = request.match_info['producer']
+    cars_qs = await Cars.query.where(Cars.producer == producer).gino.all()
+
+    cars_schema = CarResponseSchema(many=True)
+    cars_json = cars_schema.dump(cars_qs)
+    return web.json_response({'cars': cars_json},
+                             dumps=pretty_json)
