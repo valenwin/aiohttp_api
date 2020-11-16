@@ -1,1 +1,2 @@
 site_name: 'Demo site (dev environment)'
+database_uri: postgresql://postgres:password@localhost/db_name
