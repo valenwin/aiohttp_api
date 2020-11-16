@@ -1,8 +1,10 @@
-from aiohttp import web
-import json
+from aiohttp_jinja2 import template
 
 
+@template('index.html')
 async def handle(request):
-    response_obj = {'status': 'success'}
-    return web.Response(text=json.dumps(response_obj),
-                        status=200)
+    site_name = request.app['config'].get('site_name')
+    return {
+        'status': 'success',
+        'site_name': site_name
+    }
