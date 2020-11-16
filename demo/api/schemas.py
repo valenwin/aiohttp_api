@@ -11,3 +11,7 @@ class CarResponseSchema(Schema):
 
     class Meta:
         ordered = True
+
+
+class CarRequestSchema(Schema):
+    color = fields.Str()

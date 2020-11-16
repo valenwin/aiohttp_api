@@ -9,3 +9,4 @@ python entry.py -c local.yaml
 
 ### Using Postman (examples):
 - create new car: **/api/cars?producer=Toyota&model=Corolla&year=2019&color=Green&vin_code=T-C-G-2019**<br />
+- update car: **/api/cars/1?color=Yellow**
