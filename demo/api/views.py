@@ -41,3 +41,26 @@ async def car_detail(request: web.Request):
 
     return aiohttp.web.json_response(car_json,
                                      dumps=pretty_json)
+
+
+@response_schema(CarResponseSchema())
+async def car_create(request: web.Request):
+    async with ClientSession() as session:
+        car = None
+        try:
+            car = await Cars.create(
+                producer=request.query['producer'],
+                model=request.query['model'],
+                year=int(request.query['year']),
+                color=request.query['color'],
+                vin_code=request.query['vin_code']
+            )
+        except UniqueViolationError:
+            print("Vin-code should be unique")
+
+    car_schema = CarResponseSchema()
+    car_json = car_schema.dump(car)
+
+    return aiohttp.web.json_response(car_json,
+                                     dumps=pretty_json,
+                                     status=201)
