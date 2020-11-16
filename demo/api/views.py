@@ -2,8 +2,10 @@ import functools
 import json
 
 import aiohttp
+from aiohttp import ClientSession, web
 from aiohttp_apispec import response_schema
 from aiohttp_jinja2 import template
+from asyncpg import UniqueViolationError
 
 from .models import Cars
 from .schemas import CarResponseSchema
@@ -21,22 +23,21 @@ async def handle(request):
 
 
 @response_schema(CarResponseSchema(many=True), 200)
-async def cars_list(request):
+async def cars_list(request: web.Request):
     cars_qs = await Cars.query.gino.all()
     cars_schema = CarResponseSchema(many=True)
-    cars_json, errors = cars_schema.dump(cars_qs)
-    return aiohttp.web.json_response({'jokes': cars_json}, dumps=pretty_json)
+    cars_json = cars_schema.dump(cars_qs)
+    return aiohttp.web.json_response({'cars': cars_json},
+                                     dumps=pretty_json)
 
 
 @response_schema(CarResponseSchema(), 200)
-async def car_detail(request):
+async def car_detail(request: web.Request):
     car_id = int(request.match_info['id'])
-    car = await Cars.get(id=2)
-
-    if car is None:
-        raise aiohttp.web.HTTPNotFound()
+    car = await Cars.get(car_id)
 
     car_schema = CarResponseSchema()
-    car_json, errors = car_schema.dump(car)
+    car_json = car_schema.dump(car)
 
-    return aiohttp.web.json_response(car_json, dumps=pretty_json)
+    return aiohttp.web.json_response(car_json,
+                                     dumps=pretty_json)
