@@ -3,7 +3,12 @@ import aiohttp_jinja2
 import jinja2
 from aiohttp import web
 
+from . import api
 from .routes import setup_routes
+
+
+async def init_db():
+    await api.models.main()
 
 
 async def create_app(config: dict):
@@ -15,6 +20,8 @@ async def create_app(config: dict):
     )
     setup_routes(app)
 
+    # Setup DB connection
+    await init_db()
     app.on_startup.append(on_start)
     app.on_cleanup.append(on_shutdown)
 
@@ -30,3 +37,4 @@ async def on_start(app):
 
 async def on_shutdown(app):
     await app['db'].close()
+
