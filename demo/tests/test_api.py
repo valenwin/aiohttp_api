@@ -17,7 +17,7 @@ def cli(loop, aiohttp_client):
 
 async def test_car_create(cli):
     post_resp = await cli.post(
-        '/api/cars?producer=Toyota&model=Corolla&year=2019&color=Green&vin_code=T-C-G-2019')
+        '/api/cars?producer=Toyota&model=Corolla&year=2019&color=Green&vin_code=JN1WNYD21U0000007')
     assert post_resp.status == 201
 
 
@@ -31,6 +31,11 @@ async def test_car_detail(cli):
     assert get_resp.status == 200
 
 
+async def test_car_detail_404(cli):
+    get_resp = await cli.get('/api/cars/200')
+    assert get_resp.status == 404
+
+
 async def test_car_update(cli):
     put_resp = await cli.put(
         '/api/cars/1',
@@ -41,3 +46,8 @@ async def test_car_update(cli):
 async def test_car_delete(cli):
     del_resp = await cli.delete('/api/cars/1')
     assert del_resp.status == 204
+
+
+async def test_car_delete_404(cli):
+    del_resp = await cli.delete('/api/cars/200')
+    assert del_resp.status == 404
