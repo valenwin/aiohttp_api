@@ -3,7 +3,7 @@
 ## For starting project on your local machine:
 - add your db link to local.yaml file and use next command:<br />
 **python entry.py -c local.yaml**
-- for reloading project on another port you may try next command:
+- for reloading project on another port you may try next command:<br />
 **python entry.py --reload --port 5000 -c local.yaml**
 
 ### Basic features (examples):
