@@ -5,6 +5,7 @@ from aiohttp import ClientSession, web
 from aiohttp_apispec import response_schema, request_schema
 from aiohttp_jinja2 import template
 from asyncpg import UniqueViolationError
+from marshmallow import ValidationError
 
 from .models import Cars
 from .schemas import CarResponseSchema, CarRequestSchema, DeleteCarResponseSchema
@@ -44,9 +45,15 @@ async def car_detail(request: web.Request):
 
 @response_schema(CarResponseSchema())
 async def car_create(request: web.Request):
+    car_schema = CarResponseSchema()
+
     async with ClientSession() as session:
         car = None
         try:
+            car_schema.load({
+                'year': request.query['year'],
+                'vin_code': request.query['vin_code'],
+            })
             car = await Cars.create(
                 producer=request.query['producer'],
                 model=request.query['model'],
@@ -54,10 +61,11 @@ async def car_create(request: web.Request):
                 color=request.query['color'],
                 vin_code=request.query['vin_code']
             )
+        except ValidationError as err:
+            print(err.messages)
         except UniqueViolationError:
             print("Vin-code should be unique")
 
-    car_schema = CarResponseSchema()
     car_json = car_schema.dump(car)
 
     return web.json_response(car_json,
