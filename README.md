@@ -14,4 +14,4 @@
 ### Using Postman (examples):
 - POST create new car: **/api/cars?producer=Toyota&model=Corolla&year=2019&color=Green&vin_code=JN1WNYD21U0000001**<br />
 - PUT update car: **/api/cars/1?color=Yellow**
-- DELE**TE delete car: **/api/cars/1**
+- DELETE delete car: **/api/cars/1**
