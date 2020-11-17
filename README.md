@@ -1,7 +1,8 @@
 # Aiohttp API
 
 ## For start project using local settings:
-python entry.py -c local.yaml   
+- add your db link to local.yaml file and use next command:<br />
+**python entry.py -c local.yaml**
 
 ### Basic features (examples):
 - GET cars list: **/api/cars**<br />

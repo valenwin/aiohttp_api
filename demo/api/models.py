@@ -1,6 +1,5 @@
 from gino import Gino
 
-
 db = Gino()
 
 
@@ -14,8 +13,3 @@ class Cars(db.Model):
     color = db.Column(db.String(150))
     year = db.Column(db.Integer())
     vin_code = db.Column(db.String(255))
-
-
-async def main():
-    await db.set_bind('postgresql://postgres:Tinka140792@localhost/demo_auto')
-    await db.gino.create_all()

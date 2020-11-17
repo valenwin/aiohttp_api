@@ -1,4 +1,0 @@
-# Default configuration file for demo project
-
-site_name: 'Demo site'
-database_uri: postgresql://postgres:Tinka140792@localhost/demo_auto

@@ -7,8 +7,10 @@ from . import api
 from .routes import setup_routes
 
 
-async def init_db():
-    await api.models.main()
+async def init_db(database_uri: str):
+    db = api.models.db
+    await db.set_bind(database_uri)
+    await db.gino.create_all()
 
 
 async def create_app(config: dict):
@@ -20,8 +22,7 @@ async def create_app(config: dict):
     )
     setup_routes(app)
 
-    # Setup DB connection
-    await init_db()
+    await init_db(config['database_uri'])
     app.on_startup.append(on_start)
     app.on_cleanup.append(on_shutdown)
 
