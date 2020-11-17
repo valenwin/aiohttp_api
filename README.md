@@ -3,6 +3,8 @@
 ## For start project using local settings:
 - add your db link to local.yaml file and use next command:<br />
 **python entry.py -c local.yaml**
+- for reloading project on another port you may try next command:
+**python entry.py --reload --port 5000 -c local.yaml**
 
 ### Basic features (examples):
 - GET cars list: **/api/cars**<br />
